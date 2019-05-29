@@ -25,3 +25,18 @@ router.post("/", (req, res) => {
       });
   }
 });
+
+router.get("/", (req, res) => {
+  db.find()
+    .then(post => {
+      res.status(200).json(post);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({
+          error: err,
+          message: "The posts information could not be retrieved."
+        });
+    });
+});
