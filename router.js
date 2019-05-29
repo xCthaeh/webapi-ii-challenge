@@ -54,11 +54,33 @@ router.get("/:id", (req, res) => {
       }
     })
     .catch(err => {
+      res.status(500).json({
+        error: err,
+        message: "The post information could not be retrieved."
+      });
+    });
+});
+
+router.put("/:id", (req, res) => {
+  const { title, contents } = req.body;
+  const postId = req.params.id;
+
+  db.update(postId, { title, contents })
+    .then(posts => {
+      if (posts) {
+        db.findById(postId).then(updatepost => {
+          res.status(201).json(updatepost);
+        });
+      } else {
+        res.status(404).json({ message: "no" });
+      }
+    })
+    .catch(err => {
       res
         .status(500)
         .json({
           error: err,
-          message: "The post information could not be retrieved."
+          message: "The post information could not be modified."
         });
     });
 });
