@@ -32,11 +32,33 @@ router.get("/", (req, res) => {
       res.status(200).json(post);
     })
     .catch(err => {
+      res.status(500).json({
+        error: err,
+        message: "The posts information could not be retrieved."
+      });
+    });
+});
+
+router.get("/:id", (req, res) => {
+  const postid = req.params.id;
+  db.findById(postid)
+    .then(id => {
+      if (id) {
+        db.findById(postid).then(findId => {
+          res.status(200).json(findId);
+        });
+      } else {
+        res
+          .status(404)
+          .json({ message: "The post with the specified ID does not exist." });
+      }
+    })
+    .catch(err => {
       res
         .status(500)
         .json({
           error: err,
-          message: "The posts information could not be retrieved."
+          message: "The post information could not be retrieved."
         });
     });
 });
