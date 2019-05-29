@@ -76,11 +76,31 @@ router.put("/:id", (req, res) => {
       }
     })
     .catch(err => {
-      res
-        .status(500)
-        .json({
-          error: err,
-          message: "The post information could not be modified."
-        });
+      res.status(500).json({
+        error: err,
+        message: "The post information could not be modified."
+      });
     });
 });
+
+router.delete("/:id", (req, res) => {
+  const postid = req.params.id;
+  db.remove(postid)
+    .then(post => {
+      if (post) {
+        db.remove(postid).then(removepost => {
+          res.status(201).json(removepost);
+        });
+      } else {
+        res.status(404).json({
+          error: err,
+          mesage: "The post with the specified ID does not exist."
+        });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({ message: "The post could not be removed." });
+    });
+});
+
+module.exports = router;
